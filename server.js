@@ -19,16 +19,11 @@ const wsServer = new WebSocketServer({ port: 6969 });
 
 export const gamesList = [];
 export const regenerateGamesMaps = () => {
-  gamesByIds = gamesList.reduce((acc, game) => {
-    acc[game.id] = game;
-    return acc;
-  }, {});
   gamesByEngNames = gamesList.reduce((acc, game) => {
     acc[game.nameEng] = game;
     return acc;
   }, {});
 };
-export let gamesByIds = {};
 export let gamesByEngNames = {};
 
 export const refineSendData = (data) => typeof data !== 'string'
@@ -41,8 +36,8 @@ export const sendToClient = (client, payload) => {
   }
 }
 
-const filterGameClients = (gameId) => {
-  const game = gamesByIds[gameId];
+const filterGameClients = (gameNameEng) => {
+  const game = gamesByEngNames[gameNameEng];
   if (!game) {
     return false;
   }
@@ -130,18 +125,18 @@ const parseMessage = (wsClient, message) => {
 
     case 'swapCard':
       swapCard(
-        filterGameClients(payload.gameId),
+        filterGameClients(payload.gameNameEng),
         wsClient,
         payload.swap,
-        payload.gameId
+        payload.gameNameEng
       );
       break;
 
     case 'reportComplete':
       reportComplete(
-        filterGameClients(payload.gameId),
+        filterGameClients(payload.gameNameEng),
         wsClient,
-        payload.gameId
+        payload.gameNameEng
       );
       break;
 

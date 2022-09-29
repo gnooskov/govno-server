@@ -1,10 +1,10 @@
-import { AppSymbols } from "../config.js";
-import { swapHands } from "../gameUtils.js";
-import { gamesByIds } from "../server.js";
-import { sendGameState } from "./getGameState.js";
+import { AppSymbols } from '../config.js';
+import { swapHands } from '../gameUtils.js';
+import { sendGameState } from './getGameState.js';
+import { gamesByEngNames } from '../server.js';
 
-export const swapCard = (allClients, movingClient, swap, gameId) => {
-  const game = gamesByIds[gameId];
+export const swapCard = (allClients, movingClient, swap, gameNameEng) => {
+  const game = gamesByEngNames[gameNameEng];
 
   if (!game) {
     return;

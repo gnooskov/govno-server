@@ -1,9 +1,9 @@
 import { AppSymbols } from '../config.js';
-import { gamesByIds, sendToClient} from '../server.js';
-import {createNewPlayer, createShortGameDetails, regenerateNicknames} from '../utils.js';
+import { gamesByEngNames, sendToClient } from '../server.js';
+import { createNewPlayer, createShortGameDetails, regenerateNicknames } from '../utils.js';
 
-export const join = (gameClients, wsClient, gameId) => {
-  const game = gamesByIds[gameId];
+export const join = (gameClients, wsClient, gameNameEng) => {
+  const game = gamesByEngNames[gameNameEng];
 
   if (!game) {
     return;
@@ -23,7 +23,7 @@ export const join = (gameClients, wsClient, gameId) => {
     if (client[AppSymbols.ID] === wsClient[AppSymbols.ID]) {
       sendToClient(client, {
         type: 'joined',
-        payload: gameId,
+        payload: gameNameEng,
       });
     }
 

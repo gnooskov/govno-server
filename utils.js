@@ -34,12 +34,11 @@ export const filterClientsWatchingGamesList = (clients) => {
 
 // these details should be used for gameLobby
 export const createShortGameDetails = (game, client) => {
-  const { id, name, nameEng, playerNicknames, playerIds, hostId, started, ended } = game;
+  const { name, nameEng, playerNicknames, playerIds, hostId, started, ended } = game;
   const iParticipate = playerIds.includes(client[AppSymbols.ID]);
   const myPlayerIndex = playerIds.findIndex(playerId => playerId === client[AppSymbols.ID]);
 
   return {
-    id,
     name,
     nameEng,
     playerNicknames,

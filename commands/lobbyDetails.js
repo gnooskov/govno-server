@@ -1,8 +1,8 @@
-import {gamesByEngNames, gamesByIds, sendToClient} from "../server.js";
+import { gamesByEngNames, sendToClient } from "../server.js";
 import { createShortGameDetails } from "../utils.js";
 
-export const lobbyDetails = (clients, gameIdOrUrl) => {
-  const game = gamesByIds[gameIdOrUrl] || gamesByEngNames[gameIdOrUrl];
+export const lobbyDetails = (clients, gameNameEng) => {
+  const game = gamesByEngNames[gameNameEng];
 
   if (!Array.isArray(clients)) {
     clients = [clients];
@@ -19,7 +19,7 @@ export const lobbyDetails = (clients, gameIdOrUrl) => {
     clients.forEach((client) => {
       sendToClient(client,{
         type: 'gameNotFound',
-        payload: gameIdOrUrl,
+        payload: gameNameEng,
       });
     });
   }

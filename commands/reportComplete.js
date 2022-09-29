@@ -1,10 +1,10 @@
 import { AppSymbols, MAX_SCORE } from "../config.js";
 import { shuffleHands } from "../gameUtils.js";
-import { gamesByIds, sendToClient } from "../server.js"
+import { gamesByEngNames, sendToClient} from "../server.js"
 import { sendGameState } from "./getGameState.js";
 
-export const reportComplete = (allPlayers, playerClient, gameId) => {
-  const game = gamesByIds[gameId];
+export const reportComplete = (allPlayers, playerClient, gameNameEng) => {
+  const game = gamesByEngNames[gameNameEng];
 
   if (!game) {
     return;
@@ -54,7 +54,7 @@ export const reportComplete = (allPlayers, playerClient, gameId) => {
           sendToClient(client, {
             type: 'newRoundStarted',
             payload: {
-              gameId: game.id,
+              gameNameEng: game.nameEng,
             }
           });
           if (loserClientFound) {

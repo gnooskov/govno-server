@@ -1,8 +1,8 @@
 import { AppSymbols } from "../config.js";
-import { gamesByIds, refineSendData } from "../server.js";
+import { gamesByEngNames, refineSendData } from "../server.js";
 
 export const sendGameState = (clients, game) => {
-  const { id, players, playerIds, started, ended, loserId } = game;
+  const { players, playerIds, nameEng, started, ended, loserId } = game;
 
   if (!Array.isArray(clients)) {
     clients = [clients];
@@ -21,7 +21,7 @@ export const sendGameState = (clients, game) => {
     client.send(refineSendData({
       type: 'gameState',
       payload: {
-        id: id,
+        nameEng,
         hand: player.hand,
         scores,
         swaps,
@@ -34,13 +34,13 @@ export const sendGameState = (clients, game) => {
   })
 }
 
-export const getGameState = (player, gameId) => {
-  const game = gamesByIds[gameId];
+export const getGameState = (player, gameNameEng) => {
+  const game = gamesByEngNames[gameNameEng];
 
   if (!game || !game.playerIds.includes(player[AppSymbols.ID])) {
     player.send(refineSendData({
       type: 'gameNotFound',
-      payload: gameId,
+      payload: gameNameEng,
     }));
     return;
   }

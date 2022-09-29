@@ -1,9 +1,9 @@
 import { AppSymbols } from "../config.js";
-import { gamesByIds, sendToClient } from "../server.js";
+import { gamesByEngNames, sendToClient } from "../server.js";
 import { createShortGameDetails, regenerateNicknames } from "../utils.js";
 
-export const leave = (gameClients, wsClient, gameId) => {
-  const game = gamesByIds[gameId];
+export const leave = (gameClients, wsClient, gameNameEng) => {
+  const game = gamesByEngNames[gameNameEng];
   if (!game) {
     return;
   }
@@ -21,13 +21,13 @@ export const leave = (gameClients, wsClient, gameId) => {
     if (client[AppSymbols.ID] === wsClient[AppSymbols.ID]) {
       sendToClient(client, {
         type: 'left',
-        payload: gameId,
+        payload: gameNameEng,
       });
     } else {
       sendToClient(client, {
         type: 'playerLeft',
         payload: {
-          gameId,
+          gameNameEng,
           playerId: wsClient[AppSymbols.ID],
         },
       });
