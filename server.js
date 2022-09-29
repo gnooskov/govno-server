@@ -13,17 +13,23 @@ import { swapCard } from './commands/swapCard.js';
 import { filterClientsWatchingGamesList } from './utils.js';
 import { AppSymbols } from './config.js';
 import { reportComplete } from './commands/reportComplete.js';
+import {changeNickname} from "./commands/changeNickname.js";
 
 const wsServer = new WebSocketServer({ port: 6969 });
 
 export const gamesList = [];
-export const regenerateGamesByIds = () => {
+export const regenerateGamesMaps = () => {
   gamesByIds = gamesList.reduce((acc, game) => {
     acc[game.id] = game;
     return acc;
-  }, {})
-}
+  }, {});
+  gamesByEngNames = gamesList.reduce((acc, game) => {
+    acc[game.nameEng] = game;
+    return acc;
+  }, {});
+};
 export let gamesByIds = {};
+export let gamesByEngNames = {};
 
 export const refineSendData = (data) => typeof data !== 'string'
   ? JSON.stringify(data)
@@ -67,7 +73,11 @@ const parseMessage = (wsClient, message) => {
 
     case 'createGame':
       const watchers = filterClientsWatchingGamesList(wsServer.clients);
-      createGame(wsClient, watchers, payload);
+      createGame(
+        wsClient,
+        watchers,
+        wsServer.clients
+      );
       break;
 
     case 'gamesList':
@@ -80,7 +90,10 @@ const parseMessage = (wsClient, message) => {
 
     case 'myClientId':
       wsClient[AppSymbols.ID] = payload;
-      console.log(`Client reported their id ${payload}`);
+      break;
+
+    case 'myNickname':
+      wsClient[AppSymbols.NICKNAME] = payload;
       break;
 
     case 'join':
@@ -129,6 +142,14 @@ const parseMessage = (wsClient, message) => {
         filterGameClients(payload.gameId),
         wsClient,
         payload.gameId
+      );
+      break;
+
+    case 'newNickname':
+      changeNickname(
+        wsClient,
+        payload,
+        wsServer.clients
       );
       break;
 

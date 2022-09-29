@@ -1,5 +1,8 @@
-import { CARDS_PER_PLAYER, DECK } from "./config.js";
-import { shuffle } from "./utils.js";
+import {CARDS_PER_PLAYER, DECK, RANDOM_WORDS_IN_GAME_NAME, RANDOM_WORDS_IN_NICKNAME} from './config.js';
+import { pascalize, randomNumber, shuffle } from './utils.js';
+import { russianNouns } from './russian-nouns.js';
+
+const NOUNS_COUNT = russianNouns.length;
 
 export const swapHands = (game) => {
   const { playerIds, players } = game;
@@ -64,4 +67,32 @@ export const shuffleHands = (game) => {
     const deckPart = deck.slice(indexStart, indexStart + CARDS_PER_PLAYER);
     player.hand = deckPart;
   }, {});
+}
+
+export const generateRandomWords = (wordsCount, glue) => {
+  const randomIndices = {};
+  const randomWords = [];
+  let currentIndex;
+  for (let i = 0; i < wordsCount; i++) {
+    do {
+      currentIndex = randomNumber(NOUNS_COUNT);
+    } while (randomIndices[currentIndex]);
+    randomIndices[currentIndex] = true;
+    randomWords.push(russianNouns[currentIndex]);
+  }
+  return randomWords.reduce((acc, word) => {
+    if (acc) {
+      acc += glue;
+    }
+    acc += pascalize(word);
+    return acc;
+  }, '');
+}
+
+export const generateNickname = () => {
+  return generateRandomWords(RANDOM_WORDS_IN_NICKNAME, 'И');
+}
+
+export const generateGameName = () => {
+  return generateRandomWords(RANDOM_WORDS_IN_GAME_NAME, '-');
 }

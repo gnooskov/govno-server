@@ -1,8 +1,8 @@
-import { gamesByIds, refineSendData } from "../server.js";
+import {gamesByEngNames, gamesByIds, sendToClient} from "../server.js";
 import { createShortGameDetails } from "../utils.js";
 
-export const lobbyDetails = (clients, gameId) => {
-  const game = gamesByIds[gameId];
+export const lobbyDetails = (clients, gameIdOrUrl) => {
+  const game = gamesByIds[gameIdOrUrl] || gamesByEngNames[gameIdOrUrl];
 
   if (!Array.isArray(clients)) {
     clients = [clients];
@@ -10,17 +10,17 @@ export const lobbyDetails = (clients, gameId) => {
 
   if (game) {
     clients.forEach((client) => {
-      client.send(refineSendData({
+      sendToClient(client,{
         type: 'gameDetails',
-        payload: createShortGameDetails(game),
-      }));
+        payload: createShortGameDetails(game, client),
+      });
     });
   } else {
     clients.forEach((client) => {
-      client.send(refineSendData({
+      sendToClient(client,{
         type: 'gameNotFound',
-        payload: gameId,
-      }));
+        payload: gameIdOrUrl,
+      });
     });
   }
 }

@@ -2,6 +2,8 @@ export const MIN_PLAYERS = 2;
 export const MAX_PLAYERS = 4;
 export const MAX_SCORE = 1;
 export const CARDS_PER_PLAYER = 4;
+export const RANDOM_WORDS_IN_NICKNAME = 2;
+export const RANDOM_WORDS_IN_GAME_NAME = 3;
 export const CardsEnum = {
   KING: 13,
   QUEEN: 12,

@@ -1,9 +1,11 @@
+import { AppSymbols } from "./config.js";
+
 export const shuffle = (array) => {
   let currentIndex = array.length
   let randomIndex;
 
   // While there remain elements to shuffle.
-  while (currentIndex != 0) {
+  while (currentIndex !== 0) {
     // Pick a remaining element.
     randomIndex = Math.floor(Math.random() * currentIndex);
     currentIndex--;
@@ -16,7 +18,7 @@ export const shuffle = (array) => {
   return array;
 }
 
-export const randomNumber = (max, min) => {
+export const randomNumber = (max, min = 0) => {
   return min + Math.round(Math.random() * (max - min));
 }
 
@@ -31,34 +33,21 @@ export const filterClientsWatchingGamesList = (clients) => {
 }
 
 // these details should be used for gameLobby
-export const createShortGameDetails = (game) => {
-  const { id, playerIds, hostId, started, ended } = game;
-  return {
-    id,
-    playerIds,
-    hostId,
-    started,
-    ended,
-  };
-};
-
-// these details should be used for gameLobby
-export const createFullGameDetails = (game) => {
-  const { id, playerIds, players, hostId, completeClaimed, started, ended } = game;
-  const scores = playerIds.reduce((acc, playerId) => {
-    const player = players[playerId];
-    acc[playerId] = player.score;
-    return acc;
-  }, {});
+export const createShortGameDetails = (game, client) => {
+  const { id, name, nameEng, playerNicknames, playerIds, hostId, started, ended } = game;
+  const iParticipate = playerIds.includes(client[AppSymbols.ID]);
+  const myPlayerIndex = playerIds.findIndex(playerId => playerId === client[AppSymbols.ID]);
 
   return {
     id,
-    playerIds,
+    name,
+    nameEng,
+    playerNicknames,
     hostId,
-    completeClaimed,
     started,
     ended,
-    scores,
+    iParticipate,
+    myPlayerIndex,
   };
 };
 
@@ -66,4 +55,20 @@ export const createNewPlayer = () => ({
   completedRound: false,
   score: 0,
   swap: null,
-})
+});
+
+export const pascalize = (word) => `${word[0].toUpperCase()}${word.slice(1)}`;
+
+export const regenerateNicknames = (allClients, game) => {
+  const allClientsByIds = {};
+  allClients.forEach((client) => {
+    allClientsByIds[client[AppSymbols.ID]] = client;
+  }, {});
+  const { playerIds } = game;
+  const newNicknames = playerIds.reduce((acc, playerId) => {
+    const client = allClientsByIds[playerId];
+    acc.push(client[AppSymbols.NICKNAME]);
+    return acc;
+  }, []);
+  game.playerNicknames = newNicknames;
+};

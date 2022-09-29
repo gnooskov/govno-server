@@ -1,6 +1,6 @@
 import { AppSymbols } from "../config.js";
 import { gamesByIds, sendToClient } from "../server.js";
-import { createShortGameDetails } from "../utils.js";
+import { createShortGameDetails, regenerateNicknames } from "../utils.js";
 
 export const leave = (gameClients, wsClient, gameId) => {
   const game = gamesByIds[gameId];
@@ -10,8 +10,11 @@ export const leave = (gameClients, wsClient, gameId) => {
 
   const isInGame = game.playerIds.includes(wsClient[AppSymbols.ID]);
 
+  const allGameClients = [wsClient, ...gameClients];
+
   if (isInGame) {
     game.playerIds = game.playerIds.filter(id => id !== wsClient[AppSymbols.ID]);
+    regenerateNicknames(allGameClients, game);
   }
 
   gameClients.forEach(client => {
@@ -32,7 +35,7 @@ export const leave = (gameClients, wsClient, gameId) => {
 
     sendToClient(client, {
       type: 'gameDetails',
-      payload: createShortGameDetails(game),
+      payload: createShortGameDetails(game, client),
     });
   });
 };
