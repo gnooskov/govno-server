@@ -22,7 +22,7 @@ export const createGame = (wsClient, watchers, allClients) => {
     started: false,
     completeClaimed: false,
     ended: false,
-    loserId: null,
+    loserName: null,
   };
   regenerateNicknames(allClients, newGameInfo);
   gamesList.push(newGameInfo);

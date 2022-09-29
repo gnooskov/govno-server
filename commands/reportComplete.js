@@ -75,12 +75,20 @@ export const reportComplete = (allPlayers, playerClient, gameNameEng) => {
         });
       } else {
         game.ended = true;
-        sendGameState(allPlayers, game);
+        let loserPlayerIndex;
+        for (let i = 0; i < playerIds.length; i++) {
+          const searchedPlayerId = playerIds[i];
+          if (searchedPlayerId === loserPlayerId) {
+            loserPlayerIndex = i;
+            break;
+          }
+        }
+        sendGameState(allPlayers, playerClient, game);
       }
     }
   } else {
     game.players[playerId].score++;
   }
 
-  sendGameState(allPlayers, game);
+  sendGameState(allPlayers, playerClient, game);
 }

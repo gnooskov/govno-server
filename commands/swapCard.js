@@ -33,5 +33,5 @@ export const swapCard = (allClients, movingClient, swap, gameNameEng) => {
     swapHands(game);
   }
 
-  sendGameState(allClients, game);
+  sendGameState(allClients, movingClient, game);
 }
